@@ -85,22 +85,22 @@ endif()
 
 
 ######################################################################
-# Choose C++ standard. Currently 11, as we try to support VS2013.
+# Choose C++ standard. Currently 17.
 ######################################################################
-set(PHAS0100ASSIGNMENT1_CXX_STANDARD 11)
+set(PHAS0100ASSIGNMENT1_CXX_STANDARD 17)
 set(CMAKE_CXX_EXTENSIONS 0)
 set(CMAKE_CXX_STANDARD ${PHAS0100ASSIGNMENT1_CXX_STANDARD})
 set(CMAKE_CXX_STANDARD_REQUIRED 1)
 
 # This is necessary to avoid problems with compile feature checks.
-# CMAKE_CXX_STANDARD seems to only set the -std=c++11 flag for targets.
+# CMAKE_CXX_STANDARD seems to only set the -std=c++17 flag for targets.
 # However, compile flag checks also need to be done with -std=c++11.
 # The PHAS0100ASSIGNMENT1_CXX11_FLAG variable is also used for external projects
 # build during the PHAS0100ASSIGNMENT1 super-build.
-mitkFunctionCheckCompilerFlags("-std=c++11" PHAS0100ASSIGNMENT1_CXX11_FLAG)
-if(NOT PHAS0100ASSIGNMENT1_CXX11_FLAG)
+mitkFunctionCheckCompilerFlags("-std=c++17" PHAS0100ASSIGNMENT1_CXX17_FLAG)
+if(NOT PHAS0100ASSIGNMENT1_CXX17_FLAG)
   # Older gcc compilers use -std=c++0x
-  mitkFunctionCheckCompilerFlags("-std=c++0x" PHAS0100ASSIGNMENT1_CXX11_FLAG)
+  mitkFunctionCheckCompilerFlags("-std=c++17" PHAS0100ASSIGNMENT1_CXX17_FLAG)
 endif()
 
 
@@ -165,8 +165,13 @@ if(UNIX)
   if(PHAS0100ASSIGNMENT1_NO_DEPRECATED_FLAG)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PHAS0100ASSIGNMENT1_NO_DEPRECATED_FLAG}" CACHE STRING "FLags used by the compiler during all build types." FORCE)
   endif()
+  mitkFunctionCheckCompilerFlags("-Wno-ignored-attributes" PHAS0100ASSIGNMENT1_NO_IGNORED_ATTRIBUTES_FLAG)
+  if(PHAS0100ASSIGNMENT1_NO_IGNORED_ATTRIBUTES_FLAG)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${PHAS0100ASSIGNMENT1_NO_IGNORED_ATTRIBUTES_FLAG}")
+  endif()
 endif()
 
+message("JIMEDBUG: CMAKE_CXX_FLAGS=${CMAKE_CXX_FLAGS}")
 
 ######################################################################
 # A few shortcuts for lists of libraries.
