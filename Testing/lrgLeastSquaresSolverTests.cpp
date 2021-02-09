@@ -12,10 +12,10 @@ TEST_CASE( "lrgLinearDataCreator,lrgNormalEquationSolverStrategy class instantia
 
 TEST_CASE( "lrgLinearDataCreator: number of returned items", "[lrgLinearDataCreator]" ) {
   // Create a vector vec.
-  std::vector<std::pair<double, double>> vec;
+  pair_vector_double vec;
   
   // Create a pointer that points to vec.
-  auto vec_ptr = std::make_unique<std::vector<std::pair<double, double>>>(vec);
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
   
   // Other inputs
   double t0 = 4;
@@ -31,10 +31,10 @@ TEST_CASE( "lrgLinearDataCreator: number of returned items", "[lrgLinearDataCrea
 
 TEST_CASE( "lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]" ) {
   // Create a vector vec.
-  std::vector<std::pair<double, double>> vec;
+  pair_vector_double vec;
   
   // Create a pointer that points to vec.
-  auto vec_ptr = std::make_unique<std::vector<std::pair<double, double>>>(vec);
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
   
   // Other inputs
   double t0 = 4;

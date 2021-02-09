@@ -1,7 +1,7 @@
 #include "lrgNormalEquationSolverStrategy.h"
 
 
-std::pair<double, double> lrgNormalEquationSolverStrategy::FitData(std::vector<std::pair<double, double> >){
+pair_double lrgNormalEquationSolverStrategy::FitData(pair_vector_double){
 
 }
 lrgNormalEquationSolverStrategy::lrgNormalEquationSolverStrategy(/* args */)

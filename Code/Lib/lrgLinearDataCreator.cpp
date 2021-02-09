@@ -7,7 +7,7 @@
 * size is the length of the vector. Or similarly, how many pairs of (x,y) we want to add in it.
 * vec is a reference to a vector that hosts our data. 
  */
-lrgLinearDataCreator::lrgLinearDataCreator(const double t0, const double t1, const unsigned int size, std::unique_ptr<std::vector<std::pair<double, double>>> vec)
+lrgLinearDataCreator::lrgLinearDataCreator(const double t0, const double t1, const unsigned int size, pair_vector_double_ptr vec)
 {
     m_t0 = t0;
     m_t1 = t1;
@@ -21,7 +21,7 @@ lrgLinearDataCreator::lrgLinearDataCreator() {}
 // Destructor
 lrgLinearDataCreator::~lrgLinearDataCreator() {}
 
-std::vector<std::pair<double, double>> lrgLinearDataCreator::GetData()
+pair_vector_double lrgLinearDataCreator::GetData()
 {
     // We could use any generator.
     // std::default_random_engine generator;

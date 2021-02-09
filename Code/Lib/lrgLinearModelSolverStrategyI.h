@@ -2,10 +2,13 @@
 #define lrgLinearModelSolverStrategyI_h
 #include <vector>
 
+typedef std::vector<std::pair<double, double>> pair_vector_double;
+typedef std::pair<double, double> pair_double;
+
 class lrgLinearModelSolverStrategyI
 {
 public:
-    virtual std::pair<double, double> FitData(std::vector<std::pair<double, double>>) = 0;
+    virtual pair_double FitData(pair_vector_double) = 0;
 };
 
 #endif

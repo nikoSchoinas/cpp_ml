@@ -6,7 +6,7 @@
 class lrgNormalEquationSolverStrategy : public lrgLinearModelSolverStrategyI
 {
 public:
-    virtual std::pair<double, double> FitData(std::vector<std::pair<double, double> >);
+    virtual pair_double FitData(pair_vector_double);
     lrgNormalEquationSolverStrategy(/* args */);
     ~lrgNormalEquationSolverStrategy();
 };
