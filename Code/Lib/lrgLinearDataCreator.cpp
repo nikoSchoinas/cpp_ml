@@ -32,9 +32,13 @@ std::vector<std::pair<double, double>> lrgLinearDataCreator::GetData()
     // That's from numpy.random.rand documentation.
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
+    // We will use normal distribution for the noise as the code example of "Hands-On Machine Learning" book, p.108.
+    std::normal_distribution<double> noise_distribution(0.0,1.0);
+
 
     // Bind the generator and the distribution together. It's more practical.
-    auto rand_num = std::bind(distribution, mt64);
+    auto rand_x = std::bind(distribution, mt64);
+    auto rand_noise = std::bind(noise_distribution, mt64);
 
     // Declare x, y, noise variables outside of the for-loop.
     // In that way we can change their values inside for-loop without create new variables.
@@ -44,8 +48,8 @@ std::vector<std::pair<double, double>> lrgLinearDataCreator::GetData()
 
     for (unsigned int i = 0; i < m_size; i++)
     {
-        x = rand_num();
-        noise = rand_num();
+        x = rand_x();
+        noise = rand_noise();
         y = m_t1 * x + m_t0 + noise;
         (*m_vec).push_back(std::make_pair(x, y));
     }
