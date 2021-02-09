@@ -9,7 +9,6 @@ public:
     lrgLinearDataCreator();
     ~lrgLinearDataCreator();
     virtual std::vector<std::pair<double, double>> GetData();
-    void GenerateData();
 
 private:
     unsigned int m_size;
