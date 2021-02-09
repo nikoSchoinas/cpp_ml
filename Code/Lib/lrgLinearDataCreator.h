@@ -5,6 +5,7 @@
 class lrgLinearDataCreator : public lrgDataCreatorI
 {
 public:
+    lrgLinearDataCreator(const double t0, const double t1, const unsigned int size, std::unique_ptr<std::vector<std::pair<double, double>>> vec);
     lrgLinearDataCreator();
     ~lrgLinearDataCreator();
     std::vector<std::pair<double, double>> GetData();
