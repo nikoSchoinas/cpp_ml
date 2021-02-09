@@ -1,10 +1,13 @@
 #include "catch.hpp"
 #include "lrgCatchMain.h"
 #include "lrgLinearDataCreator.h"
+#include "lrgNormalEquationSolverStrategy.h"
 
 
-TEST_CASE( "lrgLinearDataCreator class instantiation", "[lrgLinearDataCreator]" ) {
-  lrgLinearDataCreator d;
+TEST_CASE( "lrgLinearDataCreator,lrgNormalEquationSolverStrategy class instantiation", "[lrg]" ) {
+  lrgLinearDataCreator d();
+  lrgNormalEquationSolverStrategy s();
+
 } 
 
 TEST_CASE( "lrgLinearDataCreator: number of returned items", "[lrgLinearDataCreator]" ) {
