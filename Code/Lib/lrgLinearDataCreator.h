@@ -17,7 +17,7 @@ private:
     unsigned int m_size;
     double m_t0;
     double m_t1;
-    std::unique_ptr<std::vector<std::pair<double, double>>> m_vec;
+    pair_vector_double_ptr m_vec;
 };
 
 #endif
