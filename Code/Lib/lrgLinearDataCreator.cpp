@@ -46,7 +46,7 @@ pair_vector_double lrgLinearDataCreator::GetData()
     double y;
     double noise;
 
-    for (unsigned int i = 0; i < m_size; i++)
+    for (size_t i = 0; i < m_size; i++)
     {
         x = rand_x();
         noise = rand_noise();
