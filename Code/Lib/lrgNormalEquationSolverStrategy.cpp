@@ -5,6 +5,7 @@
 
 
 // It is more preferable that this method receives a pointer instead of the actual vector.
+// However, in the exercise sheet the method's declaration was set like this. 
 pair_double lrgNormalEquationSolverStrategy::FitData(pair_vector_double vec)
 {
     // We are going to use the size of the vector many times, so we create a variable.
