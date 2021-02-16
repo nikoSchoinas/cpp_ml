@@ -8,7 +8,7 @@ typedef std::pair<double, double> pair_double;
 class lrgLinearModelSolverStrategyI
 {
 public:
-    virtual pair_double FitData(pair_vector_double) = 0;
+    virtual pair_double FitData(pair_vector_double vec) = 0;
 };
 
 #endif
