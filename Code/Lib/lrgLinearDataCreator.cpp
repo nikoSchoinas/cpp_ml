@@ -41,13 +41,17 @@ pair_vector_double lrgLinearDataCreator::GetData()
     auto rand_noise = std::bind(noise_distribution, mt64);
 
     // Declare x, y, noise variables outside of the for-loop.
-    // In that way we can change their values inside for-loop without create new variables.
     double x;
     double y;
     double noise;
 
     for (size_t i = 0; i < m_size; i++)
     {
+        // The code example in "Hands-On Machine Learning" (p.108) multiply the random value x with the factor of 2.
+        // This is useles since we can include this factor in the t0 factor.
+        // e.g. instead of x = 2 * rand_x() and y = 4 + 3 * x + rand_noise()
+        // we can compute 
+        // x = rand_x() and y = 4 + 6 * x + rand_noise()
         x = rand_x();
         noise = rand_noise();
         y = m_t1 * x + m_t0 + noise;
