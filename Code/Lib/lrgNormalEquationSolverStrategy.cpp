@@ -1,5 +1,4 @@
 #include "lrgNormalEquationSolverStrategy.h"
-#include <array>
 #include <Eigen/Dense>
 #include <unsupported/Eigen/NonLinearOptimization>
 
