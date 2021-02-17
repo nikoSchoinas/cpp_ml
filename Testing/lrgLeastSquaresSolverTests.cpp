@@ -2,6 +2,7 @@
 #include "lrgCatchMain.h"
 #include "lrgLinearDataCreator.h"
 #include "lrgNormalEquationSolverStrategy.h"
+#include "lrgGradientDescentSolverStrategy.h"
 
 TEST_CASE("lrgLinearDataCreator,lrgNormalEquationSolverStrategy class instantiation", "[lrg]")
 {
@@ -70,7 +71,7 @@ TEST_CASE("lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]")
   REQUIRE(abs(real_mean - approx_mean) < 0.1);
 }
 
-/************************************** BEGINNING OF FitData() TESTING ******************************************************************/
+/************************************** BEGINNING OF FitData() TESTING (lrgNormalEquationSolverStrategy) *******************************************/
 /* The first test has comments. The rest are the same with different parameters. */
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive thetas, size: 10", "[lrgNormalEquationSolverStrategy]")
@@ -231,5 +232,268 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "
   REQUIRE((std::isnan(thetas.first) || std::isinf(thetas.first)));
   REQUIRE((std::isnan(thetas.second) || std::isinf(thetas.second)));
 }
-
 /************************************** END OF FitData() TESTING ******************************************************************/
+
+
+
+/************************************** BEGINNING OF FitData() TESTING (lrgGradientDescentSolverStrategy) *******************************************/
+/* The first test has comments. The rest are the same with different parameters. */
+
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), positive thetas, size: 10, eta:0.02/0.1/0.5, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  // Create a vector vec.
+  pair_vector_double vec;
+
+  // Create a pointer that points to vec.
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  // Other inputs
+  double t0 = 4.3;
+  double t1 = 6.7;
+  unsigned int size = 10;
+
+  // Create object.
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+  vec = data.GetData();
+
+  double eta = 0.02;
+  unsigned int iterations = 1000;
+
+  // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
+  lrgGradientDescentSolverStrategy strategy(eta, iterations);
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  pair_double thetas = solver->FitData(vec);
+
+
+
+  // Due to random noise the error is expected to be quite high.
+  // The value 0.3 was determined by inspecting the result of the code example in "Hands-On Machine Learning" book.
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Try different eta.
+  eta = 0.1;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  eta = 0.5;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+  
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+}
+
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), negative thetas, size: 50, eta:0.03/0.05/0.07, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  pair_vector_double vec;
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  double t0 = -3.3;
+  double t1 = -5.7;
+  unsigned int size = 50;
+
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+  vec = data.GetData();
+
+  double eta = 0.03;
+  unsigned int iterations = 1000;
+  
+  lrgGradientDescentSolverStrategy strategy;
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  
+  // Use setters with pointers. 
+  solver->SetEta(eta);
+  solver->SetIterations(iterations);
+  pair_double thetas = solver->FitData(vec);
+
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Try different eta.
+  eta = 0.05;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  eta = 0.07;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+
+}
+
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), negative t0, positive t1, size: 100, eta:0.01/0.12/0.015, iterations:10000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  pair_vector_double vec;
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  double t0 = -2.3;
+  double t1 = 8.7;
+  unsigned int size = 100;
+
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+  vec = data.GetData();
+
+  double eta = 0.01;
+  unsigned int iterations = 10000;
+  
+  lrgGradientDescentSolverStrategy strategy;
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  
+  // Use setters with pointers. 
+  solver->SetEta(eta);
+  solver->SetIterations(iterations);
+  pair_double thetas = solver->FitData(vec);
+
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Try different eta.
+  eta = 0.012;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  eta = 0.015;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+
+}
+
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), positive t0, negative t1, size: 100, eta:0.3/0.5/0.7, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  pair_vector_double vec;
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  double t0 = 7.3;
+  double t1 = -4.7;
+  unsigned int size = 100;
+
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+  vec = data.GetData();
+
+  double eta = 0.3;
+  unsigned int iterations = 1000;
+  
+  lrgGradientDescentSolverStrategy strategy;
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  
+  // Use setters with pointers. 
+  solver->SetEta(eta);
+  solver->SetIterations(iterations);
+  pair_double thetas = solver->FitData(vec);
+
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Try different eta.
+  eta = 0.5;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  eta = 0.07;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+
+}
+
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size: 100, eta:0.4/0.5, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  pair_vector_double vec;
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  double t0 = 0.0;
+  double t1 = 0.0;
+  unsigned int size = 100;
+
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+  vec = data.GetData();
+
+  double eta = 0.4;
+  unsigned int iterations = 1000;
+  
+  // Use the constructor to set the attributes.
+  lrgGradientDescentSolverStrategy strategy(eta, iterations);
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  pair_double thetas = solver->FitData(vec);
+
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Try different eta.
+  eta = 0.5;
+  solver->SetEta(eta);
+  thetas = solver->FitData(vec);
+  REQUIRE(abs(thetas.first - t0) < 0.3);
+  REQUIRE(abs(thetas.second - t1) < 0.3);
+
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+
+}
+
+/* TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100, eta:0.1, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+{
+
+  pair_vector_double vec;
+
+  double t0 = 1.1;
+  double t1 = 6.7;
+  unsigned int size = 15;
+
+  // Custom made vector. 
+  for (size_t i = 0; i < size; i++)
+  {
+    // We do not include random noise.
+    // If X is zero, y will be always t1.
+    vec.push_back(std::make_pair(0, t1));
+  }
+
+  // Use the empty constructor.
+  lrgGradientDescentSolverStrategy strategy;
+  auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+  pair_double thetas = solver->FitData(vec);
+
+  REQUIRE(abs(thetas.first - t1) < 0.3);
+  REQUIRE(abs(thetas.second - t0) < 0.3);
+  
+  // Delete objects.
+  solver.release();
+
+} */
