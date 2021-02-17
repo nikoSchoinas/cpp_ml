@@ -33,8 +33,8 @@ pair_vector_double lrgLinearDataCreator::GetData()
     std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
     // We will use normal distribution for the noise as the code example of "Hands-On Machine Learning" book, p.108.
-    std::normal_distribution<double> noise_distribution(0.0,1.0);
-
+    // normal distribution with mean:0.0 and standard deviation:1.0
+    std::normal_distribution<double> noise_distribution(0.0, 1.0);
 
     // Bind the generator and the distribution together. It's more practical.
     auto rand_x = std::bind(distribution, mt64);
@@ -50,7 +50,7 @@ pair_vector_double lrgLinearDataCreator::GetData()
         // The code example in "Hands-On Machine Learning" (p.108) multiply the random value x with the factor of 2.
         // This is useles since we can include this factor in the t0 factor.
         // e.g. instead of x = 2 * rand_x() and y = 4 + 3 * x + rand_noise()
-        // we can compute 
+        // we can compute
         // x = rand_x() and y = 4 + 6 * x + rand_noise()
         x = rand_x();
         noise = rand_noise();
