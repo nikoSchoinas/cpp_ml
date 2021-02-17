@@ -10,15 +10,13 @@ class lrgGradientDescentSolverStrategy : public lrgLinearModelSolverStrategyI
 private:
     double m_eta;
     unsigned int m_iterations;
-    unsigned int m_m;
 
 public:
-    lrgGradientDescentSolverStrategy(double &eta, unsigned int &iterations, unsigned int &m);
+    lrgGradientDescentSolverStrategy(double &eta, unsigned int &iterations);
     lrgGradientDescentSolverStrategy();
     ~lrgGradientDescentSolverStrategy();
     void SetEta(double &eta);
     void SetIterations(unsigned int &iterations);
-    void SetM(unsigned int &m);
     virtual pair_double FitData(pair_vector_double vec);
 };
 
