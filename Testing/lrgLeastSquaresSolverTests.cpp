@@ -217,8 +217,8 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "
   for (size_t i = 0; i < size; i++)
   {
     // We do not include random noise.
-    // If X is zero, y will be always t1.
-    vec.push_back(std::make_pair(0, t1));
+    // If X is zero, y will be always t0.
+    vec.push_back(std::make_pair(0, t0));
   }
 
   lrgNormalEquationSolverStrategy strategy;
@@ -468,7 +468,7 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size:
 
 }
 
-/* TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100, eta:0.1, iterations:1000", "[lrgGradientDescentSolverStrategy]")
+TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100, eta:0.1, iterations:1000", "[lrgGradientDescentSolverStrategy]")
 {
 
   pair_vector_double vec;
@@ -481,8 +481,8 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size:
   for (size_t i = 0; i < size; i++)
   {
     // We do not include random noise.
-    // If X is zero, y will be always t1.
-    vec.push_back(std::make_pair(0, t1));
+    // If X is zero, y will be always t0.
+    vec.push_back(std::make_pair(0, t0));
   }
 
   // Use the empty constructor.
@@ -490,10 +490,22 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size:
   auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
   pair_double thetas = solver->FitData(vec);
 
-  REQUIRE(abs(thetas.first - t1) < 0.3);
-  REQUIRE(abs(thetas.second - t0) < 0.3);
+/*  If all elements of X are zero then the Gradient Batch can predict just the t0 value.
+ *  This is happening because of the matrix multiplication between X and thetas_mat (see lrgGradientDescentSolverStrategy.cpp)
+ *  A change is happening only to the first element of the gradient matrix (t0). e.g.
+ * 
+ *   X    thetas     gradient
+ *----------------------------
+ * | 1 0 | | t0 | --> | t0 |
+ * | 1 0 | | t1 | --> | t0 | 
+ *    .                 .
+ *    .                 .    
+ *    .                 .
+ */
+
+  REQUIRE(abs(thetas.first - t0) < 0.3);
   
   // Delete objects.
   solver.release();
 
-} */
+}
