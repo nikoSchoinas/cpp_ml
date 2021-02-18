@@ -56,9 +56,10 @@ TEST_CASE("lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]")
   // a variable to keep the sum of all x-values inside the vector.
   double sum = 0;
 
-  for (auto item : vec) // we could also use std::accumulate but we had to provide implementation of the + operator because our data comes in pairs.
+  for (auto item : vec) 
   {
-    sum += item.first; //first corresponds to x and second to y
+    //first corresponds to x value of the pair.
+    sum += item.first; 
   }
 
   double real_mean = sum / vec.size();
@@ -103,8 +104,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive thetas, si
 
   // Due to random noise the error is expected to be quite high.
   // The value 0.3 was determined by inspecting the result of the code example in "Hands-On Machine Learning" book.
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative thetas, size:20", "[lrgNormalEquationSolverStrategy]")
@@ -127,8 +127,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative thetas, si
   solver.release();
   vec_ptr.release();
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative t0, positive t1, size:30", "[lrgNormalEquationSolverStrategy]")
@@ -151,8 +150,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative t0, positi
   solver.release();
   vec_ptr.release();
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive t0, negative t1, size:50", "[lrgNormalEquationSolverStrategy]")
@@ -175,8 +173,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive t0, negati
   solver.release();
   vec_ptr.release();
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero thetas, size:100", "[lrgNormalEquationSolverStrategy]")
@@ -200,8 +197,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero thetas, size:1
   vec_ptr.release();
 
   // lower error 
-  REQUIRE(abs(thetas.first - t0) < 0.01);
-  REQUIRE(abs(thetas.second - t1) < 0.01);
+  REQUIRE(( abs(thetas.first - t0) < 0.1 && abs(thetas.second - t1) < 0.1));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "[lrgNormalEquationSolverStrategy]")
@@ -229,8 +225,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "
 
   // When the whole X vector is zero we ask from Eigen to compute the inverse of a zero matrix.
   // That's impossible and that's why Eigen returns nan or inf.
-  REQUIRE((std::isnan(thetas.first) || std::isinf(thetas.first)));
-  REQUIRE((std::isnan(thetas.second) || std::isinf(thetas.second)));
+  REQUIRE(((std::isnan(thetas.first) || std::isinf(thetas.first)) && (std::isnan(thetas.second) || std::isinf(thetas.second))));
 }
 /************************************** END OF FitData() TESTING ******************************************************************/
 
@@ -269,21 +264,18 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), positive thetas, s
 
   // Due to random noise the error is expected to be quite high.
   // The value 0.3 was determined by inspecting the result of the code example in "Hands-On Machine Learning" book.
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   // Try different eta.
   eta = 0.1;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   eta = 0.5;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
   
   // Delete objects.
   solver.release();
@@ -314,21 +306,18 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), negative thetas, s
   solver->SetIterations(iterations);
   pair_double thetas = solver->FitData(vec);
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   // Try different eta.
   eta = 0.05;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   eta = 0.07;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
 
   // Delete objects.
@@ -361,21 +350,18 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), negative t0, posit
   solver->SetIterations(iterations);
   pair_double thetas = solver->FitData(vec);
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   // Try different eta.
   eta = 0.012;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   eta = 0.015;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
 
   // Delete objects.
@@ -408,21 +394,18 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), positive t0, negat
   solver->SetIterations(iterations);
   pair_double thetas = solver->FitData(vec);
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   // Try different eta.
   eta = 0.5;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   eta = 0.07;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
 
   // Delete objects.
@@ -452,15 +435,13 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size:
   auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
   pair_double thetas = solver->FitData(vec);
 
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 
   // Try different eta.
   eta = 0.5;
   solver->SetEta(eta);
   thetas = solver->FitData(vec);
-  REQUIRE(abs(thetas.first - t0) < 0.3);
-  REQUIRE(abs(thetas.second - t1) < 0.3);
+  REQUIRE(( abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));;
 
   // Delete objects.
   solver.release();
