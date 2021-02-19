@@ -55,7 +55,7 @@ pair_vector_double lrgLinearDataCreator::GetData()
         x = rand_x();
         noise = rand_noise();
         y = m_t1 * x + m_t0 + noise;
-        (*m_vec).push_back(std::make_pair(x, y));
+        m_vec->push_back(std::make_pair(x, y));
     }
 
     return (*m_vec);
