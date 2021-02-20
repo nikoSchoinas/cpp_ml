@@ -4,6 +4,7 @@
 #include "lrgNormalEquationSolverStrategy.h"
 #include "lrgGradientDescentSolverStrategy.h"
 #include "lrgFileLoaderDataCreator.h"
+#include <iostream>
 
 TEST_CASE("lrgLinearDataCreator,lrgNormalEquationSolverStrategy class instantiation", "[lrg]")
 {
@@ -485,14 +486,23 @@ TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData1.txt", "[lrgFileLo
 {
   pair_vector_double vec;
   auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+  
+  // GetData() function throws error if the file cannot be read, that's why we need to use a try-catch block.
+  try
+  {
+    // ************* WARNING ***************
+    // We placed the TestFiles inside the build directory.
+    // If you want to test another file you need to provide the absolute path.
+    std::string filepath = "TestData1.txt";
+    lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
+    vec = data.GetData();
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+  }
 
-  // ************* WARNING ***************
-  // We placed the TestFiles inside the build directory.
-  // If you want to test another file you need to provide the absolute path.
-  std::string filepath = "TestData1.txt";
-  lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
-  vec = data.GetData();
-
+  // An extra check that everything is alright.
   // In that case we know that the vector vec isn't empty and the program probably won't crash.
   if (vec.size() > 0)
   {
@@ -510,23 +520,26 @@ TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData1.txt", "[lrgFileLo
   }
 }
 
+// Same test as before but for TestData2.txt.
 TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData2.txt", "[lrgFileLoaderDataCreator]")
 {
+  
   pair_vector_double vec;
   auto vec_ptr = std::make_unique<pair_vector_double>(vec);
   
+  try
+  {
+    std::string filepath = "TestData2.txt";
+    lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
+    vec = data.GetData();
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+  }
 
-  // ************* WARNING ***************
-  // We placed the TestFiles inside the build directory.
-  // If you want to test another file you need to provide the absolute path.
-  std::string filepath = "TestData2.txt";
-  lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
-  vec = data.GetData();
-
-  // In that case we know that the vector vec isn't empty and the program probably won't crash.
   if (vec.size() > 0)
   {
-    // Check the number of rows, the first and the last element.
     REQUIRE(
 
         (
