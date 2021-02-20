@@ -14,7 +14,15 @@ lrgFileLoaderDataCreator::~lrgFileLoaderDataCreator()
 pair_vector_double lrgFileLoaderDataCreator::GetData(){
 
     // We do not need try-catch block because C++ iostreams do not throw exceptions. 
-    std::ifstream m_file(m_filepath);
+    std::ifstream m_file;
+    m_file.open(m_filepath, std::ios::in);
+    
+    // We manually throw an exception if the file doesn't exist. 
+    if (! m_file)
+    {
+        throw std::ios_base::failure("Reading file failed...");
+    }
+    
 
     double x;
     double y;
