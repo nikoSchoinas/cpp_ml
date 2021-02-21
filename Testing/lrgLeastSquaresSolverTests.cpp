@@ -6,6 +6,34 @@
 #include "lrgFileLoaderDataCreator.h"
 #include <iostream>
 
+// To check different cases of FitData() (lrgNormalEquationSolverStrategy class) we need to use the same code again and again.
+// So, it is better to create a function
+pair_double checkFitDataNormal(const double &t0, const double &t1, const unsigned int &size)
+{
+  // Create a vector vec.
+  pair_vector_double vec;
+
+  // Create a pointer that points to vec.
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+
+  // Create object.
+  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
+
+  // Put the data inside vec.
+  vec = data.GetData();
+
+  // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
+  lrgNormalEquationSolverStrategy strategy;
+  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
+  pair_double thetas = solver->FitData(vec);
+
+  // Delete objects.
+  solver.release();
+  vec_ptr.release();
+
+  return thetas;
+}
+
 TEST_CASE("lrgLinearDataCreator,lrgNormalEquationSolverStrategy class instantiation", "[lrg]")
 {
   lrgLinearDataCreator d;
@@ -74,35 +102,18 @@ TEST_CASE("lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]")
   REQUIRE(abs(real_mean - approx_mean) < 0.1);
 }
 
-/************************************** BEGINNING OF FitData() TESTING (lrgNormalEquationSolverStrategy) *******************************************/
+/************************************** BEGINNING OF FitData() TESTING () *******************************************/
 /* The first test has comments. The rest are the same with different parameters. */
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive thetas, size: 10", "[lrgNormalEquationSolverStrategy]")
 {
 
-  // Create a vector vec.
-  pair_vector_double vec;
-
-  // Create a pointer that points to vec.
-  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
-
-  // Other inputs
+  // Inputs
   double t0 = 4.3;
   double t1 = 6.7;
   unsigned int size = 10;
 
-  // Create object.
-  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-  vec = data.GetData();
-
-  // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
-  lrgNormalEquationSolverStrategy strategy;
-  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  // Delete objects.
-  solver.release();
-  vec_ptr.release();
+  pair_double thetas = checkFitDataNormal(t0, t1, size);
 
   // Due to random noise the error is expected to be quite high.
   // The value 0.3 was determined by inspecting the result of the code example in "Hands-On Machine Learning" book.
@@ -112,22 +123,11 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive thetas, si
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative thetas, size:20", "[lrgNormalEquationSolverStrategy]")
 {
 
-  pair_vector_double vec;
-  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
-
   double t0 = -2.9;
   double t1 = -8.7;
   unsigned int size = 20;
 
-  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-  vec = data.GetData();
-
-  lrgNormalEquationSolverStrategy strategy;
-  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  solver.release();
-  vec_ptr.release();
+  pair_double thetas = checkFitDataNormal(t0, t1, size);
 
   REQUIRE((abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
@@ -135,45 +135,22 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative thetas, si
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), negative t0, positive t1, size:30", "[lrgNormalEquationSolverStrategy]")
 {
 
-  pair_vector_double vec;
-  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
-
   double t0 = -1.2;
   double t1 = 3;
   unsigned int size = 30;
 
-  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-  vec = data.GetData();
-
-  lrgNormalEquationSolverStrategy strategy;
-  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  solver.release();
-  vec_ptr.release();
+  pair_double thetas = checkFitDataNormal(t0, t1, size);
 
   REQUIRE((abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
 
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive t0, negative t1, size:50", "[lrgNormalEquationSolverStrategy]")
 {
-
-  pair_vector_double vec;
-  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
-
   double t0 = 5.6;
   double t1 = -3.7;
   unsigned int size = 50;
 
-  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-  vec = data.GetData();
-
-  lrgNormalEquationSolverStrategy strategy;
-  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  solver.release();
-  vec_ptr.release();
+  pair_double thetas = checkFitDataNormal(t0, t1, size);
 
   REQUIRE((abs(thetas.first - t0) < 0.3 && abs(thetas.second - t1) < 0.3));
 }
@@ -181,22 +158,11 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), positive t0, negati
 TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero thetas, size:100", "[lrgNormalEquationSolverStrategy]")
 {
 
-  pair_vector_double vec;
-  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
-
   double t0 = 0;
   double t1 = 0;
   unsigned int size = 100;
 
-  lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-  vec = data.GetData();
-
-  lrgNormalEquationSolverStrategy strategy;
-  auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  solver.release();
-  vec_ptr.release();
+  pair_double thetas = checkFitDataNormal(t0, t1, size);
 
   // lower error
   REQUIRE((abs(thetas.first - t0) < 0.1 && abs(thetas.second - t1) < 0.1));
@@ -211,7 +177,7 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "
   double t1 = 6.7;
   unsigned int size = 15;
 
-  // Custom made vector.
+  // Custom-made vector.
   for (size_t i = 0; i < size; i++)
   {
     // We do not include random noise.
@@ -221,13 +187,16 @@ TEST_CASE("lrgNormalEquationSolverStrategy: check FitData(), zero X, size:15", "
 
   lrgNormalEquationSolverStrategy strategy;
   auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-  pair_double thetas = solver->FitData(vec);
-
-  solver.release();
-
+  
+  pair_double thetas;
+  
   // When the whole X vector is zero we ask from Eigen to compute the inverse of a zero matrix.
   // That's impossible and that's why Eigen returns nan or inf.
-  REQUIRE(((std::isnan(thetas.first) || std::isinf(thetas.first)) && (std::isnan(thetas.second) || std::isinf(thetas.second))));
+  // In such a case we throw an exception, which we can catch with the CHECK_THROWS.
+  CHECK_THROWS(thetas = solver->FitData(vec));
+  
+
+  solver.release();
 }
 /************************************** END OF FitData() TESTING ******************************************************************/
 
@@ -440,7 +409,7 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero thetas, size:
   solver.release();
   vec_ptr.release();
 }
-
+/* 
 TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100, eta:0.1, iterations:1000", "[lrgGradientDescentSolverStrategy]")
 {
 
@@ -463,7 +432,7 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100,
   auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
   pair_double thetas = solver->FitData(vec);
 
-  /*  If all elements of X are zero then the Gradient Batch can predict just the t0 value.
+/*  If all elements of X are zero then the Gradient Batch can predict just the t0 value.
  *  This is happening because of the matrix multiplication between X and thetas_mat (see lrgGradientDescentSolverStrategy.cpp)
  *  A change is happening only to the first element of the gradient matrix (t0). e.g.
  * 
@@ -476,11 +445,12 @@ TEST_CASE("lrgGradientDescentSolverStrategy: check FitData(), zero X, size: 100,
  *    .                 .
  */
 
+/*
   REQUIRE(abs(thetas.first - t0) < 0.3);
 
   // Delete objects.
   solver.release();
-}
+} */
 
 TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData1.txt", "[lrgFileLoaderDataCreator]")
 {
@@ -502,22 +472,18 @@ TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData1.txt", "[lrgFileLo
     std::cerr << e.what() << '\n';
   }
 
-  // An extra check that everything is alright.
-  // In that case we know that the vector vec isn't empty and the program probably won't crash.
-  if (vec.size() > 0)
-  {
-    // Check the number of rows, the first and the last element.
-    REQUIRE(
 
-        (
-            vec.size() == 1000 &&
-            vec.front().first == 0.170065 && vec.front().second == 3.38151 &&
-            vec.back().first == 1.04707 && vec.back().second == 5.42941
+  // Check the number of rows, the first and the last element.
+  REQUIRE(
 
-            )
+      (
+          vec.size() == 1000 &&
+          vec.front().first == 0.170065 && vec.front().second == 3.38151 &&
+          vec.back().first == 1.04707 && vec.back().second == 5.42941
 
-    );
-  }
+          )
+
+  );
 }
 
 // Same test as before but for TestData2.txt.
@@ -538,17 +504,15 @@ TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData2.txt", "[lrgFileLo
     std::cerr << e.what() << '\n';
   }
 
-  if (vec.size() > 0)
-  {
-    REQUIRE(
+  REQUIRE(
 
-        (
-            vec.size() == 1000 &&
-            vec.front().first == 0.170065 && vec.front().second == 2.55157 &&
-            vec.back().first == 1.04707 && vec.back().second == 5.47648
+      (
+          vec.size() == 1000 &&
+          vec.front().first == 0.170065 && vec.front().second == 2.55157 &&
+          vec.back().first == 1.04707 && vec.back().second == 5.47648
 
-            )
+          )
 
-    );
-  }
+  );
+
 }
