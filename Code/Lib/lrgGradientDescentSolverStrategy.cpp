@@ -16,8 +16,8 @@ lrgGradientDescentSolverStrategy::lrgGradientDescentSolverStrategy()
 {
 
     // random values
-    m_eta = 0.1;
-    m_iterations = 1000;
+    m_eta = 0;
+    m_iterations = 0;
 }
 
 // Destructor
@@ -36,6 +36,13 @@ void lrgGradientDescentSolverStrategy::SetIterations(unsigned int &iterations)
 
 pair_double lrgGradientDescentSolverStrategy::FitData(pair_vector_double vec)
 {
+    // Check if eta and iterations are set. If they are zero we cannot procceed. 
+    if (m_eta == 0 || m_iterations == 0)
+    {
+        throw std::invalid_argument("Invalid arguments for eta and/or iterations...");
+    }
+    
+
     // This part of the code is the same as the FitData() method in lrgNormalEquationSolverStrategy class.
     //-----------------------------------------------------------------------------------------------------
     // We are going to use the size of the vector many times, so we create a variable.
