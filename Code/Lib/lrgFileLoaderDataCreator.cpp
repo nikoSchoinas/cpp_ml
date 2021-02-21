@@ -32,5 +32,11 @@ pair_vector_double lrgFileLoaderDataCreator::GetData(){
         m_vec->push_back(std::make_pair(x, y));
     }
 
+    if (! m_vec->size() > 0)
+    {
+        throw std::length_error("Vector is empty. Something went wrong when reading the input file...");
+    }
+    
+
     return (*m_vec);
 }
