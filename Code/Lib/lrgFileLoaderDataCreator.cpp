@@ -1,6 +1,5 @@
 #include "lrgFileLoaderDataCreator.h"
 #include <fstream>
-#include <iostream>
 
 lrgFileLoaderDataCreator::lrgFileLoaderDataCreator(std::string&  filepath, pair_vector_double_ptr vec) : m_filepath(filepath)
 {
