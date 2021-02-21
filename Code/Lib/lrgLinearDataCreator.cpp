@@ -1,7 +1,6 @@
 #include "lrgLinearDataCreator.h"
 #include <random>
 #include <functional>
-#include <exception>
 
 /* 
 * t0,t1 are the coefficients of the linear function: y = t1*x + to + noise
