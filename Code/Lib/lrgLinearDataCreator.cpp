@@ -1,6 +1,7 @@
 #include "lrgLinearDataCreator.h"
 #include <random>
 #include <functional>
+#include <exception>
 
 /* 
 * t0,t1 are the coefficients of the linear function: y = t1*x + to + noise
@@ -16,13 +17,26 @@ lrgLinearDataCreator::lrgLinearDataCreator(const double t0, const double t1, con
 }
 
 // Empty constructor
-lrgLinearDataCreator::lrgLinearDataCreator() {}
+lrgLinearDataCreator::lrgLinearDataCreator()
+{
+    m_t0 = 0;
+    m_t1 = 0;
+    m_size = 0;
+}
 
 // Destructor
 lrgLinearDataCreator::~lrgLinearDataCreator() {}
 
 pair_vector_double lrgLinearDataCreator::GetData()
 {
+
+    // If the attributes (m_t0, m_t1, m_size) are not specified throw an error.
+    // This could happen if you create an object with the empty constructor and then call the GetData() method.
+    if (m_t0 == 0 && m_t1 == 0 && m_size == 0)
+    {
+        throw std::invalid_argument("Class attributes have not been set correctly...");
+    }
+    
     // We could use any generator.
     // std::default_random_engine generator;
     std::mt19937_64 mt64;
