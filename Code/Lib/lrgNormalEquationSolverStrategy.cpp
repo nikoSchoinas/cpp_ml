@@ -38,6 +38,14 @@ pair_double lrgNormalEquationSolverStrategy::FitData(pair_vector_double vec)
     thetas_mat = (X.transpose() * X).inverse() * X.transpose() * y;
 
     pair_double thetas = std::make_pair(thetas_mat(0), thetas_mat(1));
+
+    // When the whole X vector is zero we ask from Eigen to compute the inverse of a zero matrix.
+    // That's impossible and that's why Eigen returns nan or inf.
+    if (std::isnan(thetas.first) || std::isinf(thetas.first) || std::isnan(thetas.second) || std::isinf(thetas.second))
+    {
+        throw std::logic_error("Invalid values for thetas...");
+    }
+    
     return thetas;
 
 }
