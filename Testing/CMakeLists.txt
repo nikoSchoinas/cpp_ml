@@ -34,4 +34,5 @@ endforeach()
 ##################################################################################################
 
 add_test(NoArgs ${EXECUTABLE_OUTPUT_PATH}/lrgBasicTest)
+add_test(lrg ${EXECUTABLE_OUTPUT_PATH}/lrgLeastSquaresSolverTests)
 add_test(1File ${EXECUTABLE_OUTPUT_PATH}/lrgCommandLineArgsTest ${DATA_DIR}/input.txt)
