@@ -85,18 +85,6 @@ TEST_CASE("lrgLinearDataCreator: number of returned items", "[lrgLinearDataCreat
   REQUIRE(vec.size() == size);
 }
 
-TEST_CASE("lrgLinearDataCreator: negative test, GetData() (empty constructor)", "[lrgLinearDataCreator]")
-{
-  // Create a vector vec.
-  pair_vector_double vec;
-
-  // Create object.
-  lrgLinearDataCreator data;
-
-  CHECK_THROWS(vec = data.GetData());
-
-}
-
 TEST_CASE("lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]")
 {
   // Create a vector vec.
@@ -132,13 +120,25 @@ TEST_CASE("lrgLinearDataCreator: distribution check", "[lrgLinearDataCreator]")
   double approx_mean = (vec.front().first + vec.back().first) / 2;
 
   // It is rational to think that real and approximate mean values will not be the same.
-  // In order to run the test, we set an error rate of 10%.
+  // In order to run the test, we set an error rate.
   // That means that the difference between real_mean and approx_mean will not be higher than 0.1.
   // It may fail sometimes.
   REQUIRE(abs(real_mean - approx_mean) < 0.1);
 }
 
+TEST_CASE("lrgLinearDataCreator: negative test, GetData() (empty constructor)", "[lrgLinearDataCreator]")
+{
+  // Create a vector vec.
+  pair_vector_double vec;
 
+  // Create object.
+  lrgLinearDataCreator data;
+
+  // When using the empty constructor for lrgLinearDataCreator, then all the attributes are set to zero.
+  // In that case the GetData() method cannot compute random pairs and throws an error.
+  CHECK_THROWS(vec = data.GetData());
+
+}
 
 /************************************** BEGINNING OF FitData() TESTING () *******************************************/
 
@@ -532,13 +532,27 @@ TEST_CASE("lrgFileLoaderDataCreator: check GetData() TestData2.txt", "[lrgFileLo
 
 }
 
-TEST_CASE("lrgFileLoaderDataCreator: negative testm check GetData() (wrong path)", "[lrgFileLoaderDataCreator]")
+TEST_CASE("lrgFileLoaderDataCreator: negative test check GetData() (wrong path)", "[lrgFileLoaderDataCreator]")
 {
   pair_vector_double vec;
   auto vec_ptr = std::make_unique<pair_vector_double>(vec);
   
   // We give a path that doen't exist. 
   std::string filepath = "../Testing/TestFiles/NOT_EXISTING_FILE.txt";
+  lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
+
+  // In the case that the file doesn't exist or the path is wrong GetData() throws an error.
+  CHECK_THROWS(vec = data.GetData());
+
+} 
+
+TEST_CASE("lrgFileLoaderDataCreator: negative test check GetData() (empty file)", "[lrgFileLoaderDataCreator]")
+{
+  pair_vector_double vec;
+  auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+  
+  // We give a path that doen't exist. 
+  std::string filepath = "../Testing/TestFiles/TestData0.txt.txt";
   lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
 
   // In the case that the file doesn't exist or the path is wrong GetData() throws an error.
