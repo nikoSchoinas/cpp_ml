@@ -31,11 +31,11 @@ pair_double lrgNormalEquationSolverStrategy::FitData(pair_vector_double vec)
 
     // Create an Eigen::Matrix (y) by using the allocated memory that array_y had.
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> y(array_y, size, 1);
-    // Do the same with arra_x. ;
-    // RowMajor tells the map function to store the eigen::matrix row by row.
+    // Do the same with arra_x.
+    // RowMajor tells the map function to store the Eigen::Matrix row by row.
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic, Eigen::RowMajor>> X(array_x[0], size, 2);
 
-    // An Eigen:matrix to store the result. We know the dimentions in advance. They are always 2x1.
+    // An Eigen:Matrix to store the result. We know the dimentions in advance. They are always 2x1.
     Eigen::MatrixXd thetas_mat(2, 1);
     thetas_mat = (X.transpose() * X).inverse() * X.transpose() * y;
 

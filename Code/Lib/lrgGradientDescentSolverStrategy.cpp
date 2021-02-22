@@ -14,8 +14,6 @@ lrgGradientDescentSolverStrategy::lrgGradientDescentSolverStrategy(double &eta, 
 // Empty constructor
 lrgGradientDescentSolverStrategy::lrgGradientDescentSolverStrategy()
 {
-
-    // random values
     m_eta = 0;
     m_iterations = 0;
 }
@@ -85,11 +83,11 @@ pair_double lrgGradientDescentSolverStrategy::FitData(pair_vector_double vec)
     array_thetas[1] = rand_theta();
 
     // Map array_thetas to an Eigen::Matrix (thetas) and use the already allocated memory.
-    // thetas_mat is a 2x1 array.
+    // thetas_mat is always a 2x1 array.
     Eigen::Map<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> thetas_mat(array_thetas, 2, 1);
 
     // An Eigen::Matrix to store the gradients.
-    // gradients is a 2x1 array.
+    // gradients is always a 2x1 array.
     Eigen::MatrixXd gradients(2, 1);
 
     for (size_t i = 0; i < m_iterations; i++)
