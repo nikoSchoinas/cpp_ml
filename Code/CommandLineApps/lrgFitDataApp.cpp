@@ -1,5 +1,6 @@
 #include <lrgExceptionMacro.h>
 #include <iostream>
+#include <fstream>
 #include "lrgNormalEquationSolverStrategy.h"
 #include "lrgGradientDescentSolverStrategy.h"
 #include "lrgFileLoaderDataCreator.h"
@@ -26,11 +27,32 @@ int main(int argc, char **argv)
 {
     int returnStatus = EXIT_FAILURE;
 
-    // Command line app expects 3 arguments.
+    // Command line app expects 2 or 5 or 9 arguments.
+
+    // Case of 2 arguments:
+    //---------------------
     // 1. The app's name.
-    // 2. The file path (-f <filepath>)
-    // 3. The solver (-s <solver>)
-    if (argc < 5)
+    // 2. The --help/-h tag.
+
+    // Case of 5 arguments:
+    //----------------------
+    // 1. The app's name.
+    // 2. The --file/-g tag.
+    // 3. The actual file path (<filepath>)
+    // 4. The --solver/-s tag.
+    // 5. The solver keyword (gradient or normal).
+
+    //Case of 9 arguments:
+    //---------------------
+    // 1-5: see above
+    // 6. The --eta/-e tag.
+    // 7. The value of eta (<eta>)
+    // 8. The --iterations/-i tag.
+    // 9. The number of iterations (<iterations>) 
+
+    // In any other case respond with the help message.
+
+    if (argc != 2 && argc != 5 && argc != 9)
     {
         how_to_use(argv[0]);
         return 1;
@@ -42,12 +64,12 @@ int main(int argc, char **argv)
     double eta = 0;
     unsigned int iterations = 0;    
 
-    // Iterator starts from one to check the options.
+    // Iterator starts from one to check the options and skips the app's name.
     for (size_t i = 1; i < argc; i++)
     {
         
         arg = argv[i];
-        // This if-statement runs only if the user gives the right value of arguments and one of them is the -h or --help.
+
         if ((arg == "-h") || (arg == "--help"))
         {
             how_to_use(argv[0]);
@@ -95,17 +117,30 @@ int main(int argc, char **argv)
         }
     }
 
-    //Check if the solver has the right values (gradient or parameter).
+    //Check if the solver has the right values (gradient or normal).
     if(! (solver == "normal" || solver == "gradient")){
         std::cerr << "Invalid arguments for --solver." << std::endl;
     }
 
     try
     {
+        // Check if the file is readable. A similar check is done inside GetData() method of lrgFileLoaderDataCreator class.
+        std::ifstream input_file;
+        input_file.open(filepath, std::ios::in);
+
+        if (! input_file.good())
+        {
+            throw std::ios_base::failure("Something went wrong with the input file...");
+        }
+
         // Get the data from the given file and put the inside vector (vec).
         pair_vector_double vec;
         auto vec_ptr = std::make_unique<pair_vector_double>(vec);
         lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
+        
+        // Inside GetData() method of lrgFileLoaderDataCreator class there is a check to ensure that the file was read correctly.
+        // If not, the method throws an error that is handled by the command line app.
+        // So, there is no need to add this check here. 
         vec = data.GetData();
 
         // use FitData() of lrgNormalEquationSolverStrategy.
