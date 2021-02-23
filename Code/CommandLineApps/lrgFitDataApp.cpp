@@ -124,24 +124,49 @@ int main(int argc, char **argv)
 
     try
     {
+        // A variable that stores the number of lines in the file. 
+        // It is usefull to check if the file was read correctly.
+        int num_lines = 0;
+
         // Check if the file is readable. A similar check is done inside GetData() method of lrgFileLoaderDataCreator class.
         std::ifstream input_file;
         input_file.open(filepath, std::ios::in);
 
-        if (! input_file.good())
+        // good() method is true if any of the eofbit, failbit or badbit is set.
+        // In that case, throw an error.
+        if (! input_file.good()) 
         {
             throw std::ios_base::failure("Something went wrong with the input file...");
         }
+        // If the file is readable, then count how many lines it has.
+        // We will use that information to check that the file was read correctly.  
+        else if (input_file.is_open())
+        {
+            std::string line;
+            // Get the number of lines.
+            while (getline(input_file, line))
+            {
+                num_lines++;
+            }
+            
+        }
+        // Close the file.
+        input_file.close();
+        
 
         // Get the data from the given file and put the inside vector (vec).
         pair_vector_double vec;
         auto vec_ptr = std::make_unique<pair_vector_double>(vec);
         lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
-        
-        // Inside GetData() method of lrgFileLoaderDataCreator class there is a check to ensure that the file was read correctly.
-        // If not, the method throws an error that is handled by the command line app.
-        // So, there is no need to add this check here. 
         vec = data.GetData();
+
+        // One way to check if the file was read correctly is to check 
+        // if the vector size equals the number of lines. 
+        if (vec.size() != num_lines)
+        {
+            throw std::ios_base::failure("Something went wrong with the input file...");
+        }
+         
 
         // use FitData() of lrgNormalEquationSolverStrategy.
         if (solver == "normal")
