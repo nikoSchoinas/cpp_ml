@@ -551,11 +551,11 @@ TEST_CASE("lrgFileLoaderDataCreator: negative test check GetData() (empty file)"
   pair_vector_double vec;
   auto vec_ptr = std::make_unique<pair_vector_double>(vec);
   
-  // We give a path that doen't exist. 
+  // Path to an empty file. 
   std::string filepath = "../Testing/TestFiles/TestData0.txt.txt";
   lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
 
-  // In the case that the file doesn't exist or the path is wrong GetData() throws an error.
+  // In the case of an empty file, GetData() throws an error.
   CHECK_THROWS(vec = data.GetData());
 
 } 
