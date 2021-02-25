@@ -5,9 +5,9 @@
 class lrgNormalEquationSolverStrategy : public lrgLinearModelSolverStrategyI
 {
 public:
-    lrgNormalEquationSolverStrategy(/* args */);
+    lrgNormalEquationSolverStrategy();
     ~lrgNormalEquationSolverStrategy();
-    virtual pair_double FitData(pair_vector_double vec);
+    virtual pdd FitData(pdd_vector vec);
 };
 
 #endif

@@ -4,18 +4,19 @@
 #include <string>
 #include <memory>
 
-typedef std::unique_ptr<std::vector<std::pair<double, double>>> pair_vector_double_ptr;
+// pdd stands for pair of doubles, i.e. pair<double, double>
+typedef std::shared_ptr<std::vector<std::pair<double, double>>> shared_ptr_pdd_vector;
 
 
 class lrgFileLoaderDataCreator : public lrgDataCreatorI
 {
 private:
     std::string m_filepath;
-    pair_vector_double_ptr m_vec;
+    shared_ptr_pdd_vector m_vec_ptr;
 public:
-    lrgFileLoaderDataCreator(std::string&  filepath, pair_vector_double_ptr vec);
+    lrgFileLoaderDataCreator(std::string&  filepath, shared_ptr_pdd_vector vec_ptr);
     ~lrgFileLoaderDataCreator();
-    virtual pair_vector_double GetData();
+    virtual pdd_vector GetData();
 };
 
 #endif

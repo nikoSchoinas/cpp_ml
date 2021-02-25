@@ -3,8 +3,6 @@
 #include "lrgLinearModelSolverStrategyI.h"
 #include <memory>
 
-typedef std::unique_ptr<std::vector<std::pair<double, double>>> pair_vector_double_ptr;
-
 class lrgGradientDescentSolverStrategy : public lrgLinearModelSolverStrategyI
 {
 private:
@@ -17,7 +15,7 @@ public:
     ~lrgGradientDescentSolverStrategy();
     void SetEta(double &eta);
     void SetIterations(unsigned int &iterations);
-    virtual pair_double FitData(pair_vector_double vec);
+    virtual pdd FitData(pdd_vector vec);
 };
 
 #endif

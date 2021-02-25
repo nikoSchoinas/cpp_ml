@@ -3,21 +3,21 @@
 #include "lrgDataCreatorI.h"
 #include <memory>
 
-typedef std::unique_ptr<std::vector<std::pair<double, double>>> pair_vector_double_ptr;
-
+// pdd stand for pair of doubles, i.e. pair<double, double>
+typedef std::shared_ptr<std::vector<std::pair<double, double>>> shared_ptr_pdd_vector; 
 class lrgLinearDataCreator : public lrgDataCreatorI
 {
 public:
-    lrgLinearDataCreator(const double t0, const double t1, const unsigned int size, pair_vector_double_ptr vec);
+    lrgLinearDataCreator(double t0, double t1, unsigned int size, shared_ptr_pdd_vector vec_ptr);
     lrgLinearDataCreator();
     ~lrgLinearDataCreator();
-    virtual pair_vector_double GetData();
+    virtual pdd_vector GetData();
 
 private:
     unsigned int m_size;
     double m_t0;
     double m_t1;
-    pair_vector_double_ptr m_vec;
+    shared_ptr_pdd_vector m_vec_ptr;
 };
 
 #endif
