@@ -7,7 +7,6 @@
 
 // A function that shows how to use the app in the command line.
 // Inspiration was taken from the official cplusplus website.
-// http://www.cplusplus.com/articles/DEN36Up4/
 static void how_to_use(std::string app)
 {
     std::cerr << "Usage: " << app << " <option(s)>\n"
@@ -37,7 +36,7 @@ int main(int argc, char **argv)
     // Case of 5 arguments:
     //----------------------
     // 1. The app's name.
-    // 2. The --file/-g tag.
+    // 2. The --file/-f tag.
     // 3. The actual file path (<filepath>)
     // 4. The --solver/-s tag.
     // 5. The solver keyword (gradient or normal).
@@ -107,7 +106,7 @@ int main(int argc, char **argv)
         }
         else if ((arg == "-i") || (arg == "--iterations"))
         {
-            //Check that there is an eta value after the --iteartions/-i option.
+            //Check that there is an eta value after the --iterations/-i option.
             if (i + 1 < argc)
             {
                 // use ++i to take the solver name instead of the option parameter.
@@ -128,11 +127,12 @@ int main(int argc, char **argv)
         // It is usefull to check if the file was read correctly.
         int num_lines = 0;
 
-        // Check if the file is readable. A similar check is done inside GetData() method of lrgFileLoaderDataCreator class.
+        // Open file.
         std::ifstream input_file;
         input_file.open(filepath, std::ios::in);
 
-        // good() method is true if any of the eofbit, failbit or badbit is set.
+        // Check if the file is readable.
+        // good() method is false if any of the eofbit, failbit or badbit is set.
         // In that case, throw an error.
         if (! input_file.good()) 
         {
@@ -155,10 +155,16 @@ int main(int argc, char **argv)
         
 
         // Get the data from the given file and put the inside vector (vec).
-        pair_vector_double vec;
-        auto vec_ptr = std::make_unique<pair_vector_double>(vec);
+        // Shared pointers go as follow:
+        // Initially, vec_ptr --> vec
+        // then, data.m_vec_ptr --> vec
+        // then, data_ptr --> data
+        
+        pdd_vector vec;
+        auto vec_ptr = std::make_shared<pdd_vector>(vec);
         lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
-        vec = data.GetData();
+        std::shared_ptr<lrgDataCreatorI> data_ptr = std::make_shared<lrgFileLoaderDataCreator>(data);
+        vec = data_ptr->GetData();
 
         // One way to check if the file was read correctly is to check 
         // if the vector size equals the number of lines. 
@@ -173,8 +179,8 @@ int main(int argc, char **argv)
         {
             // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
             lrgNormalEquationSolverStrategy strategy;
-            auto solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
-            pair_double thetas = solver->FitData(vec);
+            std::unique_ptr<lrgLinearModelSolverStrategyI> solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
+            pdd thetas = solver->FitData(vec);
             std::cout << "t0: " << thetas.first << ", t1: " << thetas.second << std::endl;
         }
         // use FitData() of lrgGradientDescentSolverStrategy.
@@ -182,8 +188,8 @@ int main(int argc, char **argv)
         {
             // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
             lrgGradientDescentSolverStrategy strategy(eta, iterations);
-            auto solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
-            pair_double thetas = solver->FitData(vec);
+            std::unique_ptr<lrgLinearModelSolverStrategyI> solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
+            pdd thetas = solver->FitData(vec);
             std::cout << "t0: " << thetas.first << ", t1: " << thetas.second << std::endl;
         }
         
