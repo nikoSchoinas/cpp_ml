@@ -2,12 +2,13 @@
 #define lrgDataCreatorI_h
 #include <vector>
 
-typedef std::vector<std::pair<double, double>> pair_vector_double;
+// pdd stands for pair of doubles, i.e. pair<double, double>
+typedef std::vector<std::pair<double, double>> pdd_vector;
 
 class lrgDataCreatorI
 {
 public:
-    virtual pair_vector_double GetData() = 0;
+    virtual pdd_vector GetData() = 0;
 };
 
 #endif

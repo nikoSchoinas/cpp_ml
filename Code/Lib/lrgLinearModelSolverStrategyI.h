@@ -2,13 +2,14 @@
 #define lrgLinearModelSolverStrategyI_h
 #include <vector>
 
-typedef std::vector<std::pair<double, double>> pair_vector_double;
-typedef std::pair<double, double> pair_double;
+// pdd stands for pair of doubles, i.e. pair<double, double>
+typedef std::vector<std::pair<double, double>> pdd_vector;
+typedef std::pair<double, double> pdd;
 
 class lrgLinearModelSolverStrategyI
 {
 public:
-    virtual pair_double FitData(pair_vector_double vec) = 0;
+    virtual pdd FitData(pdd_vector vec) = 0;
 };
 
 #endif
