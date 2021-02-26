@@ -74,6 +74,11 @@ All the methods/functions used in this project were tested for a range of repres
 ~/PHAS0100Assignment1/build$ ctest 
 ```
 
+If you want to run the test file (lrgLeastSquaresSolverTests.cpp) as an executable, then you **NEED** to do this inside the **bin** folder, otherwise some tests will fail.
+```sh
+~/PHAS0100Assignment1/build/bin$ ./lrgLeastSquaresSolverTests
+```
+
 License
 ----
 
