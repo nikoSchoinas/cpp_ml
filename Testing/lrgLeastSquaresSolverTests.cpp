@@ -9,6 +9,17 @@
 // So, it is better to create a function
 pdd checkFitDataNormal(const double &t0, const double &t1, const unsigned int &size)
 {
+  // data is an object of type lrgLinearDataCreator and has a shared_ptr as one of its attributes.
+  // data_ptr is another shared_ptr that points to data. 
+  // We had to use shared pointers to achieve this implementation.
+  // vec_ptr is also a shared_ptr but it could be a unique_ptr, too.
+  // Shared pointers go as follow:  [the arrow (-->) means a "points to" relationship]
+  // Initially, vec_ptr --> vec
+  // then, data.m_vec_ptr --> vec
+  // then, data_ptr --> data and abstractly we could say that data_ptr --> vec
+  // vec_ptr seems to be useles, but actually creates the ownership between a pointer and the vector (vec)
+  // Next, that ownership is passed to the data object. 
+
   // Create a vector vec.
   pdd_vector vec;
 
@@ -17,11 +28,6 @@ pdd checkFitDataNormal(const double &t0, const double &t1, const unsigned int &s
 
   // Create an object that randomly generates the data by calling the constructor.
   lrgLinearDataCreator data(t0, t1, size, std::move(vec_ptr));
-
-  // We use shared pointers as follows:
-  // Initially, vec_ptr --> vec
-  // then, data.m_vec_ptr --> vec
-  // then, data_ptr --> data
 
   // Create a shared pointer that points to data object.
   std::shared_ptr<lrgDataCreatorI> data_ptr = std::make_shared<lrgLinearDataCreator>(data);

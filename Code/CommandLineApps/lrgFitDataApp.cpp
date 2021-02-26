@@ -154,12 +154,17 @@ int main(int argc, char **argv)
         input_file.close();
         
 
-        // Get the data from the given file and put the inside vector (vec).
-        // Shared pointers go as follow:
+        // Get the data from the given file and put it inside vector (vec).
+        // data is an object of type lrgFileLoaderDataCreator and has a shared_ptr as one of its attributes.
+        // data_ptr is another shared_ptr that points to data. 
+        // We had to use shared pointers to achieve this implementation.
+        // vec_ptr is also a shared_ptr but it could be a unique_ptr, too.
+        // Shared pointers go as follow:  [the arrow (-->) means a "points to" relationship]
         // Initially, vec_ptr --> vec
         // then, data.m_vec_ptr --> vec
-        // then, data_ptr --> data
-        
+        // then, data_ptr --> data and abstractly we could say that data_ptr --> vec
+        // vec_ptr seems to be useles, but actually creates the ownership between a pointer and the vector (vec)
+        // Next, that ownership is passed to the data object.      
         pdd_vector vec;
         auto vec_ptr = std::make_shared<pdd_vector>(vec);
         lrgFileLoaderDataCreator data(filepath, std::move(vec_ptr));
@@ -177,7 +182,8 @@ int main(int argc, char **argv)
         // use FitData() of lrgNormalEquationSolverStrategy.
         if (solver == "normal")
         {
-            // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
+            // In that case we can use unique pointers.
+            // This is a case of how polymorphism can be used.
             lrgNormalEquationSolverStrategy strategy;
             std::unique_ptr<lrgLinearModelSolverStrategyI> solver = std::make_unique<lrgNormalEquationSolverStrategy>(strategy);
             pdd thetas = solver->FitData(vec);
@@ -186,7 +192,8 @@ int main(int argc, char **argv)
         // use FitData() of lrgGradientDescentSolverStrategy.
         else if (solver == "gradient")
         {
-            // According to Eigen documentation, it's better to use pointers to create objects that use Eigen::Matrices.
+            // In that case we can use unique pointers.
+            // This is a another case of how polymorphism can be used.
             lrgGradientDescentSolverStrategy strategy(eta, iterations);
             std::unique_ptr<lrgLinearModelSolverStrategyI> solver = std::make_unique<lrgGradientDescentSolverStrategy>(strategy);
             pdd thetas = solver->FitData(vec);
